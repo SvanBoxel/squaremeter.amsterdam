@@ -67,9 +67,9 @@
     }
     
     function drawCityArea() {
-      fetch('./data/cityarea.json').then(data => {
-        return data.json()
-      }).then(json => {
+      fetch('./data/cityarea.json')
+      .then(data => data.json())
+      .then(json => {
         json.features.forEach(area => {
           const coordinates = area.geometry.coordinates[0].map(coo => ({ lat: coo[1], lng: coo[0] }))
           
@@ -153,10 +153,9 @@
     ]
     
     function drawNeighborhoods() {
-      fetch('./data/neighborhoods.json').then(data => {
-        return data.json()
-      }).then(json => {
-        console.log(json)
+      fetch('./data/neighborhoods.json')
+      .then(data => data.json())
+      .then(json => {
         json.forEach(area => {
           const coordinates = area.coordinates;
           const neighborhood = new google.maps.Polygon({
@@ -178,10 +177,11 @@
 
     function drawPricePolygons() {
       Promise.all(price_data.map(url => fetch(url)))
-      .then(promiseData => {
-        return Promise.all(promiseData.map(data => data.json()));
-      }).then(json => {
-        json.flat().forEach(area => {
+      .then(promiseData => Promise.all(promiseData.map(data => data.json())))
+      .then(json => {
+        json
+        .flat()
+        .forEach(area => {
           const coordinates = area.COORDS
           .split('|')
           .filter((el) => el != "")
