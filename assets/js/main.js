@@ -117,6 +117,8 @@ function showData(e) {
   const price = results.find((result) => result.type === "pricePolygon");
 
   neighborhoodBlock.innerText = `${neighborhood.name} (${area.name})`;
+  visualisationBlock.innerText = "";
+  hundredBuysYouBlock.innerText = "";
 
   if (price) {
     const hundredBuysYou = ((1 / parseInt(price.price)) * 100).toFixed(3);
@@ -135,21 +137,18 @@ function showData(e) {
       }
     }
 
-    visualisationBlock.innerText = "";
-    priceBlock.innerText = `€${price.price}`;
+    priceBlock.innerHTML = `You pay <strong>€${price.price}</strong> per square meter.`;
     hundredBuysYouBlock.innerText = `€100 buys you an area of ${hundredBuysYou}m2 or:`;
-
+    visualisationArray.forEach((element) => {
+      visualisationBlock.append(element);
+    });
     visualisationInfo = document.createElement("p");
     visualisationInfo.innerHTML = `An area the size of ${(
       hundredBuysYou / item.area
     ).toFixed(3)} ${item.name}`;
     visualisationBlock.append(visualisationInfo);
-
-    visualisationArray.forEach((element) => {
-      visualisationBlock.append(element);
-    });
   } else {
-    priceBlock.innerText = "Unknown";
+    priceBlock.innerText = "Square meter price unknown";
   }
 }
 
