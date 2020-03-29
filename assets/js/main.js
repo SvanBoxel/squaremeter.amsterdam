@@ -147,7 +147,7 @@ function showData(e) {
     visualisationArray.forEach((element) => {
       visualisationBlock.append(element);
     });
-    visualisationInfo = document.createElement("p");
+    const visualisationInfo = document.createElement("p");
     visualisationInfo.innerHTML = `An area the size of ${(
       hundredBuysYou / item.area
     ).toFixed(3)} ${item.name}`;
@@ -157,7 +157,7 @@ function showData(e) {
   }
 }
 
-function initMap() {
+function loadMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
     center: {
@@ -172,6 +172,8 @@ function initMap() {
     },
   });
 
+}
+function initMap() {
   drawCityArea();
   drawNeighborhoods();
   drawPricePolygons();
@@ -239,7 +241,7 @@ function drawPricePolygons() {
             area.SELECTIE <= color.higher_bound
         );
 
-        pricePolygonOptions = {
+        const pricePolygonOptions = {
           paths: coordinates,
           strokeColor: color,
           strokeOpacity: 0.5,

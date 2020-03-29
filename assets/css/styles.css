@@ -89,8 +89,7 @@ img.item {
 #popupContainer {
   background-color: #fff;
   margin: 35% 100px;
-  height: 20%;
-  padding: 10px;
+  padding: 20px 10px;
 }
 
 #popupContainer ul {
