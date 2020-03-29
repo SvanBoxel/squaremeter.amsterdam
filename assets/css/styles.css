@@ -57,7 +57,7 @@ a:before {
 }
 
 #info {
-  padding: 100px;
+  padding: 40px 100px;
   flex: 1;
 }
 
@@ -66,7 +66,7 @@ a:before {
 }
 
 #visualisation {
-  width: 500px;
+  width: 600px;
 }
 
 img.item {
@@ -96,6 +96,7 @@ img.item {
 #popupContainer ul {
   list-style: none;
 }
+
 #popup:target {
   visibility: visible;
 }

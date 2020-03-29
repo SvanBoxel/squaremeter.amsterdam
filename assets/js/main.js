@@ -92,8 +92,8 @@ const items = [
   {
     name: "tompouces",
     asset: "./assets/img/tompouce.png",
-    area: 0.10 * 0.05
-  }
+    area: 0.1 * 0.05,
+  },
 ];
 
 const priceBlock = document.getElementById("price");
