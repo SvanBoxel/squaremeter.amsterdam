@@ -80,7 +80,7 @@ const items = [
     area: Math.pow(0.085 / 2, 2) * Math.PI,
   },
   {
-    name: "kroketten",
+    name: "croquettes",
     asset: "./assets/img/kroket.png",
     area: 0.105 * 0.035,
   },
@@ -89,6 +89,11 @@ const items = [
     asset: "./assets/img/tegel.png",
     area: 0.11 * 0.11,
   },
+  {
+    name: "tompouces",
+    asset: "./assets/img/tompouce.png",
+    area: 0.10 * 0.05
+  }
 ];
 
 const priceBlock = document.getElementById("price");
