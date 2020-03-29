@@ -157,7 +157,7 @@ function showData(e) {
   }
 }
 
-function loadMap() {
+function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
     center: {
@@ -171,9 +171,7 @@ function loadMap() {
       strictBounds: false,
     },
   });
-
-}
-function initMap() {
+  
   drawCityArea();
   drawNeighborhoods();
   drawPricePolygons();
