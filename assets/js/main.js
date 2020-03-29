@@ -1,4 +1,3 @@
-console.log(1);
 let map;
     
 const AMSTERDAM_BOUNDS = {
@@ -7,58 +6,6 @@ const AMSTERDAM_BOUNDS = {
   west: 4.7,
   east: 5.1,
 };
-
-const priceBlock = document.getElementById('price');
-const cityAreaBlock = document.getElementById('cityarea');
-const neighborhoodBlock = document.getElementById('neighborhood');
-const polygons = [];
-
-function resetInfo() {
-  cityAreaBlock.innerText = "";
-  neighborhoodBlock.innerText= "";
-  priceBlock.innerText = "";
-} 
-
-function initMap() {
-  console.log(2)
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: {lat: 52.35, lng: 4.9},
-    streetViewControl: true,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    restriction: {
-      latLngBounds: AMSTERDAM_BOUNDS,
-      strictBounds: false,
-    },
-  });
-  
-  drawCityArea();
-  drawNeighborhoods();
-  drawPricePolygons();
-}
-
-function drawCityArea() {
-  fetch('./data/cityarea.json')
-  .then(data => data.json())
-  .then(json => {
-    json.features.forEach(area => {
-      const coordinates = area.geometry.coordinates[0].map(coo => ({ lat: coo[1], lng: coo[0] }))
-      const cityArea = new google.maps.Polygon({
-        paths: coordinates,
-        strokeColor: '#ff0000',
-        strokeOpacity: 0.25,
-        strokeWeight: 1,
-        fillColor: '#0000ff',
-        fillOpacity: 0
-      });
-
-      cityArea.name = area.properties.Stadsdeel;
-      cityArea.type = 'cityArea'
-      polygons.push(cityArea)
-      cityArea.setMap(map);
-    })
-  })
-}
 
 const price_data = [
   './data/prices_2018/price_data_01.json',
@@ -72,6 +19,7 @@ const price_data = [
   './data/prices_2018/price_data_09.json',
   './data/prices_2018/price_data_10.json'
 ];
+
 const colors = [
   {
     lower_bound: 0,
@@ -125,6 +73,73 @@ const colors = [
   }
 ]
 
+const items = [
+  {
+    name: 'stroofwafels',
+    area: Math.pow(0.085/2, 2) * Math.PI
+  },
+  {
+    name: 'bitterballen',
+    area: Math.pow(0.035/2, 2) * Math.PI
+  },
+  {
+    name: 'delftse tegeltjes',
+    area: 0.11 * 0.11
+  }]
+
+const priceBlock = document.getElementById('price');
+const neighborhoodBlock = document.getElementById('neighborhood');
+const hundredBuysYouBlock = document.getElementById('hundredBuysYou');
+const visualisatiobBlock = document.getElementById('visualisation');
+const polygons = [];
+
+function addPolygonToMap(polygon, type, properties) {
+  polygon.type = type;
+  Object.keys(properties).forEach(property => polygon[property] = properties[property])
+  polygons.push(polygon)
+  polygon.setMap(map);
+}
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: {
+      lat: 52.35, 
+      lng: 4.9
+    },
+    streetViewControl: false,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    restriction: {
+      latLngBounds: AMSTERDAM_BOUNDS,
+      strictBounds: false,
+    },
+  });
+  
+  drawCityArea();
+  drawNeighborhoods();
+  drawPricePolygons();
+}
+
+function drawCityArea() {
+  fetch('./data/cityarea.json')
+  .then(data => data.json())
+  .then(json => {
+    json.features.forEach(area => {
+      const coordinates = area.geometry.coordinates[0].map(coo => ({ lat: coo[1], lng: coo[0] }))
+      const cityArea = new google.maps.Polygon({
+        paths: coordinates,
+        strokeColor: '#ff0000',
+        strokeOpacity: 0.25,
+        strokeWeight: 1,
+        fillColor: '#0000ff',
+        fillOpacity: 0
+      });
+
+      addPolygonToMap(cityArea, 'cityArea', { name: area.properties.Stadsdeel })
+    })
+  })
+}
+
 function drawNeighborhoods() {
   fetch('./data/neighborhoods.json')
   .then(data => data.json())
@@ -139,12 +154,7 @@ function drawNeighborhoods() {
         fillOpacity: 0
       });
       
-      neighborhood.name = area.name;
-      neighborhood.type = 'neighborhood'
-      polygons.push(neighborhood)
-      neighborhood.setMap(map);
-
-//          google.maps.event.addListener(neighborhood, 'mouseover', resetInfo)
+      addPolygonToMap(neighborhood, 'neighborhood', { name: area.name })
     })
   })
 }
@@ -178,21 +188,31 @@ function drawPricePolygons() {
 
       const pricePolygon = new google.maps.Polygon(pricePolygonOptions);
       
-      pricePolygon.price = area.SELECTIE;
-      pricePolygon.type = 'pricePolygon'
-      polygons.push(pricePolygon)
-      pricePolygon.setMap(map);
+      addPolygonToMap(pricePolygon, 'pricePolygon', { price: area.SELECTIE })
 
       google.maps.event.addListener(pricePolygon, 'mouseover', (e) => {
         const results = polygons.filter(polygon =>  google.maps.geometry.poly.containsLocation(e.latLng, polygon))
-       
         const area = results.find(result => result.type === 'cityArea')
         const neighborhood = results.reverse().find(result => result.type === 'neighborhood')
         const price = results.find(result => result.type === 'pricePolygon')
 
-        cityAreaBlock.innerText = area.name;
-        neighborhoodBlock.innerText= neighborhood.name;
-        priceBlock.innerText = price ? price.price : "Unknown"
+        neighborhoodBlock.innerText= `${neighborhood.name} (${area.name})`;
+
+        if (price) {
+          priceBlock.innerText = `€${price.price}`;
+
+          const hundredBuysYou = (1 / parseInt(price.price) * 100).toFixed(3);
+
+
+
+          var item = items[Math.floor(Math.random() * items.length)];
+
+          hundredBuysYouBlock.innerText = `€100 buys you an area of ${hundredBuysYou}m2 or:`
+          visualisatiobBlock.innerText = `an area the size of ${(hundredBuysYou / item.area).toFixed(3)} ${item.name}`
+          
+        } else {
+          priceBlock.innerText = "Unknown";
+        }
       })
     })
   })
