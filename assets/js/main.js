@@ -76,21 +76,24 @@ const colors = [
 const items = [
   {
     name: 'stroofwafels',
+    asset: './assets/img/stroopwafel.png',
     area: Math.pow(0.085/2, 2) * Math.PI
   },
   {
-    name: 'bitterballen',
-    area: Math.pow(0.035/2, 2) * Math.PI
+    name: 'kroketten',
+    asset: './assets/img/kroket.png',
+    area: 0.105 * 0.035
   },
   {
     name: 'delftse tegeltjes',
+    asset: './assets/img/tegel.png',
     area: 0.11 * 0.11
   }]
 
 const priceBlock = document.getElementById('price');
 const neighborhoodBlock = document.getElementById('neighborhood');
 const hundredBuysYouBlock = document.getElementById('hundredBuysYou');
-const visualisatiobBlock = document.getElementById('visualisation');
+const visualisationBlock = document.getElementById('visualisation');
 const polygons = [];
 
 function addPolygonToMap(polygon, type, properties) {
@@ -98,6 +101,50 @@ function addPolygonToMap(polygon, type, properties) {
   Object.keys(properties).forEach(property => polygon[property] = properties[property])
   polygons.push(polygon)
   polygon.setMap(map);
+}
+
+function showData(e) {
+  const results = polygons.filter(polygon =>  google.maps.geometry.poly.containsLocation(e.latLng, polygon))
+  const area = results.find(result => result.type === 'cityArea')
+  const neighborhood = results.reverse().find(result => result.type === 'neighborhood')
+  const price = results.find(result => result.type === 'pricePolygon')
+
+  neighborhoodBlock.innerText= `${neighborhood.name} (${area.name})`;
+
+  if (price) {
+    
+    const hundredBuysYou = (1 / parseInt(price.price) * 100).toFixed(3);
+    const item = items[Math.floor(Math.random() * items.length)];
+    const itemCount = hundredBuysYou / item.area;
+    const visualisationArray = []
+
+
+    for(let i=1; i <= Math.ceil(itemCount); i++) {
+      const image = document.createElement('img');
+      image.src = item.asset;
+      image.classList.add('item')
+      visualisationArray.push(image);
+
+      if (i === Math.ceil(itemCount)) {
+        image.style.width = `${itemCount % 1 * 100}px`
+      }
+    }
+
+    visualisationBlock.innerText = "";
+    priceBlock.innerText = `€${price.price}`;
+    hundredBuysYouBlock.innerText = `€100 buys you an area of ${hundredBuysYou}m2 or:`
+
+    visualisationInfo = document.createElement("p")
+    visualisationInfo.innerHTML = `An area the size of ${(hundredBuysYou / item.area).toFixed(3)} ${item.name}`;
+    visualisationBlock.append(visualisationInfo); 
+    
+    visualisationArray.forEach((element) => {
+      visualisationBlock.append(element)
+    })
+    
+  } else {
+    priceBlock.innerText = "Unknown";
+  }
 }
 
 function initMap() {
@@ -187,33 +234,8 @@ function drawPricePolygons() {
       }
 
       const pricePolygon = new google.maps.Polygon(pricePolygonOptions);
-      
-      addPolygonToMap(pricePolygon, 'pricePolygon', { price: area.SELECTIE })
-
-      google.maps.event.addListener(pricePolygon, 'mouseover', (e) => {
-        const results = polygons.filter(polygon =>  google.maps.geometry.poly.containsLocation(e.latLng, polygon))
-        const area = results.find(result => result.type === 'cityArea')
-        const neighborhood = results.reverse().find(result => result.type === 'neighborhood')
-        const price = results.find(result => result.type === 'pricePolygon')
-
-        neighborhoodBlock.innerText= `${neighborhood.name} (${area.name})`;
-
-        if (price) {
-          priceBlock.innerText = `€${price.price}`;
-
-          const hundredBuysYou = (1 / parseInt(price.price) * 100).toFixed(3);
-
-
-
-          var item = items[Math.floor(Math.random() * items.length)];
-
-          hundredBuysYouBlock.innerText = `€100 buys you an area of ${hundredBuysYou}m2 or:`
-          visualisatiobBlock.innerText = `an area the size of ${(hundredBuysYou / item.area).toFixed(3)} ${item.name}`
-          
-        } else {
-          priceBlock.innerText = "Unknown";
-        }
-      })
+      addPolygonToMap(pricePolygon, 'pricePolygon', { price: area.SELECTIE });
+      google.maps.event.addListener(pricePolygon, 'mouseover', showData);
     })
   })
 }

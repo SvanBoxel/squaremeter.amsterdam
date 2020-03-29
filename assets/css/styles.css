@@ -1,0 +1,38 @@
+body {
+  font-family: 'Dosis', sans-serif;
+}
+#map {
+  height: 100%;
+  width: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#container {
+  position: absolute;
+  width: 50%;
+  left: 50%;
+  top: 0;
+}
+
+#info {
+  padding: 100px;
+}
+
+#visualisation {
+  width: 500px;
+}
+
+img.item {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  object-position: left;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

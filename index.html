@@ -1,50 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-  <meta charset="utf-8">
-  <title>Amsterdam square meter prices</title>
-  <style>
-    body {
-      font-family: 'Dosis', sans-serif;
-    }
-    #map {
-      height: 100%;
-      width: 50%;
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-
-    #info {
-      position: absolute;
-      height: 100%;
-      width: 50%;
-      padding: 100px;
-      left: 50%;
-      top: 0;
-    }
-
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div id="map"></div>
-  <div id="info">
-    <h1>What do you pay for a square meter in Amsterdam?</h1>
-    <h2 id="neighborhood"></h2>
-    <div id="price"></div>
-    <div id='hundredBuysYou'></div>
-    <div id='visualisation'></div>
-  </div>
-  <script src="./assets/js/main.js">
-  </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKLf7RbOpjAf1oCVIpUhzkJqmuLLQQA7s&callback=initMap">
-  </script>
-</body>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Amsterdam square meter prices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="./assets/css/styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="container">
+      <div id="info">
+        <h1>What do you pay for a square meter in Amsterdam?</h1>
+        <h2 id="neighborhood"></h2>
+        <div id="price"></div>
+        <div id='hundredBuysYou'></div>
+        <div id='visualisation'></div>
+      </div>
+    </div>
+    <script src="./assets/js/main.js">
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKLf7RbOpjAf1oCVIpUhzkJqmuLLQQA7s&callback=initMap">
+    </script>
+  </body>
 </html>
