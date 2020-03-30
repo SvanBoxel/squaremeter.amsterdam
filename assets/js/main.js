@@ -171,7 +171,6 @@ function initMap() {
       strictBounds: false,
     },
   });
-  
   drawCityArea();
   drawNeighborhoods();
   drawPricePolygons();
