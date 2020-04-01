@@ -150,10 +150,10 @@ function showData(e) {
     const visualisationInfo = document.createElement("p");
     visualisationInfo.innerHTML = `An area the size of ${(
       hundredBuysYou / item.area
-    ).toFixed(3)} ${item.name}`;
+    ).toFixed(3)} ${item.name}.`;
     visualisationBlock.append(visualisationInfo);
   } else {
-    priceBlock.innerText = "Square meter price unknown";
+    priceBlock.innerText = "Square meter price unknown.";
   }
 }
 
