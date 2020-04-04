@@ -85,7 +85,7 @@ const items = [
     area: 0.105 * 0.035,
   },
   {
-    name: "delftse tegeltjes",
+    name: "Delft blue tiles",
     asset: "./assets/img/tegel.png",
     area: 0.11 * 0.11,
   },
