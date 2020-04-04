@@ -18,4 +18,4 @@ The original data sources are:
 Everything except for the price data can be re-retrieved and parsed from these sources by running the `./scripts/retrieve-data.js` script (`npm run retrieve-data`). Price data has been manually imported into this project.
 
 ## Contributions
-In case you're thinking of improving this project, or adding support for other cities as well, then you can go ahead and open up or issue in this repository. 
+In case you're thinking of improving this project, or adding support for other cities as well, then you can go ahead and open up a pull request or issue in this repository. 
