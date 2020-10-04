@@ -17,7 +17,7 @@ const retrieveAndWriteCityAreaInfo = async () => {
   const json = await data.json();
   console.log("✅ Retrieved city data");
   console.log("⏳ Saving city data");
-  fs.writeFile("./data/cityarea.json", JSON.stringify(json), function (err) {
+  fs.writeFile("./data/cityarea.json", JSON.stringify(json), (err) => {
     if (err) return console.log(err);
     console.log("✅ Saved city data");
   });
@@ -27,7 +27,9 @@ const retrieveAndWriteNeighborhoodData = async () => {
   console.log("⏳ Retrieving neighborhood data...");
   const data = await fetch(neighborhoodGeometryInfoEndpoint);
   const text = await data.text();
-  let json = await csv().fromString(text);
+  const json = await csv().fromString(text);
+
+  console.log("⏳ Parsing neighborhood data...");
 
   const result = json.map((row) => {
     return {
@@ -43,17 +45,13 @@ const retrieveAndWriteNeighborhoodData = async () => {
   console.log("✅ Retrieved neighborhood data");
   console.log("⏳ Saving neighborhood data...");
 
-  fs.writeFile("./data/neighborhoods.json", JSON.stringify(result), function (
-    err
-  ) {
+  fs.writeFile("./data/neighborhoods.json", JSON.stringify(result), (err) => {
     if (err) return console.log(err);
     console.log("✅ Saved neighborhood data");
   });
 };
 
-const main = async () => {
+(async () => {
   await retrieveAndWriteCityAreaInfo();
   await retrieveAndWriteNeighborhoodData();
-};
-
-main();
+})();
