@@ -7,7 +7,7 @@ const AMSTERDAM_BOUNDS = {
   east: 5.1,
 };
 
-const DEFAULT_YEAR = 2019;
+const DEFAULT_YEAR = 2020;
 const data_folder = './data';
 
 const colors = [
@@ -123,7 +123,7 @@ function showData(e) {
   const neighborhood = results
     .reverse()
     .find((result) => result.type === "neighborhood");
-    console.log(neighborhood)
+  
   const price = results.find((result) => result.type === "pricePolygon");
 
   neighborhoodBlock.innerText = `${neighborhood.name} (${area.name})`;
@@ -177,7 +177,7 @@ function initMap() {
     },
   });
   drawCityArea();
-  // drawNeighborhoods();
+  drawNeighborhoods();
   const dataSources = getPriceDataSources();
   drawPricePolygons(dataSources);
 }
@@ -264,8 +264,22 @@ function drawPricePolygons(dataSources) {
         };
 
         const pricePolygon = new google.maps.Polygon(pricePolygonOptions);
-        addPolygonToMap(pricePolygon, "pricePolygon", { price: area.SELECTIE });
+        addPolygonToMap(pricePolygon, "pricePolygon", { price }); 
         google.maps.event.addListener(pricePolygon, "mouseover", showData);
       });
     });
 }
+
+ document.getElementById("updateYear").onchange = function(){
+    var value = document.getElementById("updateYear").value;
+
+    const oldPolygons = [...polygons]
+
+    const dataSources = getPriceDataSources(value);
+
+    for (polygon of oldPolygons) {
+      polygon.setMap(null)
+    }
+
+    drawPricePolygons(dataSources);
+ };
