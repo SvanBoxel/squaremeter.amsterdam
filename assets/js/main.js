@@ -7,18 +7,8 @@ const AMSTERDAM_BOUNDS = {
   east: 5.1,
 };
 
-const price_data = [
-  "./data/prices_2019/price_data_01.json",
-  "./data/prices_2019/price_data_02.json",
-  "./data/prices_2019/price_data_03.json",
-  "./data/prices_2019/price_data_04.json",
-  "./data/prices_2019/price_data_05.json",
-  "./data/prices_2019/price_data_06.json",
-  "./data/prices_2019/price_data_07.json",
-  "./data/prices_2019/price_data_08.json",
-  "./data/prices_2019/price_data_09.json",
-  "./data/prices_2019/price_data_10.json",
-];
+const DEFAULT_YEAR = 2019;
+const data_folder = './data';
 
 const colors = [
   {
@@ -68,10 +58,17 @@ const colors = [
   },
   {
     lower_bound: 7901,
-    higher_bound: 13000,
+    higher_bound: 8120,
     color: "#4A0606",
   },
+    {
+    lower_bound: 8120,
+    higher_bound: 15000,
+    color: "#1A0202",
+  },
 ];
+
+
 
 const items = [
   {
@@ -102,6 +99,13 @@ const hundredBuysYouBlock = document.getElementById("hundredBuysYou");
 const visualisationBlock = document.getElementById("visualisation");
 const polygons = [];
 
+
+function getPriceDataSources(year = DEFAULT_YEAR) {
+  return Array(10).fill(null).map((val, index) => {
+    return `${data_folder}/prices_${year}/price_data_${String(index+1).padStart(2, '0')}.json`;
+  })
+}
+
 function addPolygonToMap(polygon, type, properties) {
   polygon.type = type;
   Object.keys(properties).forEach(
@@ -119,6 +123,7 @@ function showData(e) {
   const neighborhood = results
     .reverse()
     .find((result) => result.type === "neighborhood");
+    console.log(neighborhood)
   const price = results.find((result) => result.type === "pricePolygon");
 
   neighborhoodBlock.innerText = `${neighborhood.name} (${area.name})`;
@@ -172,8 +177,9 @@ function initMap() {
     },
   });
   drawCityArea();
-  drawNeighborhoods();
-  drawPricePolygons();
+  // drawNeighborhoods();
+  const dataSources = getPriceDataSources();
+  drawPricePolygons(dataSources);
 }
 
 function drawCityArea() {
@@ -220,30 +226,39 @@ function drawNeighborhoods() {
     });
 }
 
-function drawPricePolygons() {
-  Promise.all(price_data.map((url) => fetch(url)))
+const dataRegex = /(],\[)|(\[{2,4})|(]{2,3})/g;
+function drawPricePolygons(dataSources) {
+  Promise.all(dataSources.map((url) => fetch(url)))
     .then((promiseData) => Promise.all(promiseData.map((data) => data.json())))
     .then((json) => {
       json.flat().forEach((area) => {
-        const coordinates = area.COORDS.split("|")
-          .filter((el) => el != "")
+        const coordinates = (area.COORDS || area.WKT).replace(dataRegex, "|").split("|")
+          .filter((el) => el.length > 3)
           .map((coordinate) => {
-            const [lng, lat] = coordinate.split(",");
-            return { lng: parseFloat(lng), lat: parseFloat(lat) };
+            const coords = coordinate.split(",");
+            let lat = parseFloat(coords[0]);
+            let lng = parseFloat(coords[1]);
+
+            if (lat < 10 ) {
+              return { lng: lat, lat: lng };
+            }
+
+            return { lng, lat };
           });
 
-        const { color } = colors.find(
+        const price = area.SELECTIE || Number(area.LABEL.replace(/\D/g, "").substring(0, 4));
+        const color = colors.find(
           (color) =>
-            area.SELECTIE >= color.lower_bound &&
-            area.SELECTIE <= color.higher_bound
-        );
+            price >= color.lower_bound &&
+            price <= color.higher_bound
+        ).color || "";
 
         const pricePolygonOptions = {
           paths: coordinates,
           strokeColor: color,
           strokeOpacity: 0.5,
           strokeWeight: 1,
-          fillColor: color,
+          fillColor: color || '#ffffff',
           fillOpacity: 0.6,
           zIndex: 100,
         };
