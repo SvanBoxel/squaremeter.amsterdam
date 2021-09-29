@@ -64,7 +64,7 @@ const colors = [
     {
     lower_bound: 8120,
     higher_bound: 15000,
-    color: "#1A0202",
+    color: "#2A0303",
   },
 ];
 
@@ -165,6 +165,7 @@ function showData(e) {
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
+    fullscreenControl: false,
     center: {
       lat: 52.35,
       lng: 4.9,
@@ -232,10 +233,13 @@ function drawPricePolygons(dataSources) {
     .then((promiseData) => Promise.all(promiseData.map((data) => data.json())))
     .then((json) => {
       json.flat().forEach((area) => {
+        // Geo string is differently formatted per data
         const coordinates = (area.COORDS || area.WKT).replace(dataRegex, "|").split("|")
           .filter((el) => el.length > 3)
           .map((coordinate) => {
             const coords = coordinate.split(",");
+
+            // Lat lng order differs per data set
             let lat = parseFloat(coords[0]);
             let lng = parseFloat(coords[1]);
 
@@ -247,6 +251,7 @@ function drawPricePolygons(dataSources) {
           });
 
         const price = area.SELECTIE || Number(area.LABEL.replace(/\D/g, "").substring(0, 4));
+
         const color = colors.find(
           (color) =>
             price >= color.lower_bound &&
