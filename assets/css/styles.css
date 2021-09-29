@@ -38,7 +38,7 @@ a:before {
   content: "» "
 }
 
-#map {
+.mapContainer {
   height: 100%;
   width: 50%;
   position: absolute;
@@ -46,6 +46,36 @@ a:before {
   top: 0;
 }
 
+#map {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.yearSelect {
+  position: absolute;
+  z-index: 10;
+  top: 10px;
+  right: 10px;
+  border: 0px;
+  padding: 0px 27px 0 17px;
+  appearance: none;
+  cursor: pointer;
+  height: 40px;
+  vertical-align: middle;
+  color: rgb(86, 86, 86);
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 18px;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+  background-repeat: no-repeat;
+  background-position-y: 50%;
+  background-position-x: 98%;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+}
 #container {
   position: absolute;
   width: 50%;
@@ -102,43 +132,43 @@ img.item {
     flex-flow: column;
     height: 100%;
   }
-
+  
   h1 {
     font-size: 1.8em;
   }
-
+  
   h2 {
     font-size: 1.4em;
   }
-
+  
   #map, #container {
     width: 100%;
     position: initial;
   }
-
+  
   #map {
     position: relative;
     overflow: hidden;
     flex: 0 1 350px;
   }
-
+  
   #info {
     padding: 20px;
   }
-
+  
   #container {
     min-height: 250px;
     flex: 1 0 0;
   }
-
+  
   #popup {
     position: fixed;
   }
-
+  
   #popupContainer {
     margin: 35% 20px;
   }
-
+  
   footer {
     padding: 0 20px;
   }
