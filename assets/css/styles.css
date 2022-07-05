@@ -76,6 +76,7 @@ a:before {
   background-position-x: 98%;
   background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
 }
+
 #container {
   position: absolute;
   width: 50%;
@@ -126,6 +127,47 @@ img.item {
   visibility: visible;
 }
 
+.priceMapInfo {
+  position: absolute;
+  z-index: 10;
+  top: 70px;
+  right: 10px;
+  width: 70px;
+  height: 120px;
+  pointer-events: none;
+}
+
+.priceMax, .priceMin {
+  position:absolute;
+  right: 12px;
+  font-size: 10px;
+  background-color: #ffffffa6;
+  padding: 1px;
+  font-family: roboto;
+}
+
+.priceMax {
+  top: 0;
+}
+.priceMin {
+  bottom: 0;
+}
+
+#priceGradient {
+  height:100%;
+  width: 10px;
+  background-color: red;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-image:
+    linear-gradient(
+      to bottom, 
+      #fffdc2 0%,
+      #fffdc2 100%
+    );
+}
+
 @media (max-width: 1024px) {
   html, body {
     display: flex;
@@ -144,6 +186,15 @@ img.item {
   #map, #container {
     width: 100%;
     position: initial;
+  }
+
+  #container {
+    padding-top: 100%;
+  }
+  
+  .mapContainer {
+    height: 50%;
+    width: 100%;
   }
   
   #map {

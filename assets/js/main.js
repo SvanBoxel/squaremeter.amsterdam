@@ -7,68 +7,59 @@ const AMSTERDAM_BOUNDS = {
   east: 5.1,
 };
 
-const DEFAULT_YEAR = 2020;
+const DEFAULT_YEAR = 2021;
 const data_folder = './data';
 
-const colors = [
-  {
-    lower_bound: 0,
-    higher_bound: 1976,
-    color: "#002070",
-  },
-  {
-    lower_bound: 1976,
-    higher_bound: 2633,
-    color: "#003DD7",
-  },
-  {
-    lower_bound: 2633,
-    higher_bound: 3292,
-    color: "#0098FF",
-  },
-  {
-    lower_bound: 3292,
-    higher_bound: 3950,
-    color: "#13FFEB",
-  },
-  {
-    lower_bound: 3950,
-    higher_bound: 4609,
-    color: "#9AFF00",
-  },
-  {
-    lower_bound: 4609,
-    higher_bound: 5267,
-    color: "#FFFF00",
-  },
-  {
-    lower_bound: 5267,
-    higher_bound: 5926,
-    color: "#FF8000",
-  },
-  {
-    lower_bound: 5926,
-    higher_bound: 6585,
-    color: "#FF0000",
-  },
-  {
-    lower_bound: 6585,
-    higher_bound: 7901,
-    color: "#990000",
-  },
-  {
-    lower_bound: 7901,
-    higher_bound: 8120,
-    color: "#4A0606",
-  },
-    {
-    lower_bound: 8120,
-    higher_bound: 15000,
-    color: "#2A0303",
-  },
-];
+let selectedYear;
 
-
+const yearData = {
+  2018: [
+    { lower_bound: 0,  higher_bound: 1926, color: "#002070" },
+    { lower_bound: 1924,  higher_bound: 2565, color: "#003DD7" },
+    { lower_bound: 2565, higher_bound: 3207, color: "#0098FF" },
+    { lower_bound: 3207, higher_bound: 3949, color:  "#09c2eb"},
+    { lower_bound: 3949, higher_bound: 3848, color: "#11FFEB" },
+    { lower_bound: 3848, higher_bound: 4490, color: "#9AFF00" },
+    { lower_bound: 4490, higher_bound: 5131, color: "#FFFF00" },
+    { lower_bound: 5131, higher_bound: 6415, color: "#FF8000" },
+    { lower_bound: 6415, higher_bound: 7698, color: "#FF0000" },
+    { lower_bound: 7698, higher_bound: 15000, color: "#990000" }
+  ],
+  2019: [
+    { lower_bound: 1975,  higher_bound: 2632, color: "#003DD7" },
+    { lower_bound: 2632, higher_bound: 3291, color: "#0098FF" },
+    { lower_bound: 3291, higher_bound: 3949, color: "#09c2eb"},
+    { lower_bound: 3949, higher_bound: 4608, color: "#13FFEB" },
+    { lower_bound: 4608, higher_bound: 5266, color: "#9AFF00" },
+    { lower_bound: 5266, higher_bound: 5925, color: "#FFFF00" },
+    { lower_bound: 5925, higher_bound: 6484, color: "#FF8000" },
+    { lower_bound: 6484, higher_bound: 7900, color: "#FF0000" },
+    { lower_bound: 7900, higher_bound: 15000, color: "#990000" }
+  ],
+  2020: [
+    { lower_bound: 1999, higher_bound: 2666, color: "#002070" },
+    { lower_bound: 2666, higher_bound: 3333, color: "#003DD7" },
+    { lower_bound: 3333, higher_bound: 4000, color: "#0098FF" },
+    { lower_bound: 4000, higher_bound: 4667, color: "#13FFEB" },
+    { lower_bound: 4667, higher_bound: 5333, color: "#9AFF00" },
+    { lower_bound: 5333, higher_bound: 6000, color: "#FFFF00" },
+    { lower_bound: 6000, higher_bound: 6667, color: "#FF8000" },
+    { lower_bound: 6667, higher_bound: 8001, color: "#FF0000" },
+    { lower_bound: 8001, higher_bound: 9999, color: "#990000" },
+    { lower_bound: 9999, higher_bound: 20000, color:"#820099" }
+  ],
+  2021: [
+    { lower_bound: 2738, higher_bound: 3422, color: "#003DD7"},
+    { lower_bound: 3422, higher_bound: 4107, color: "#0098FF" },
+    { lower_bound: 4107, higher_bound: 4792, color: "#13FFEB" },
+    { lower_bound: 4792, higher_bound: 5476, color: "#9AFF00" },
+    { lower_bound: 5476, higher_bound: 6160, color: "#FFFF00" },
+    { lower_bound: 6160, higher_bound: 6846, color: "#FF8000" },
+    { lower_bound: 6846, higher_bound: 8215, color: "#FF0000" },
+    { lower_bound: 8215, higher_bound: 10269, color: "#990000" },
+    { lower_bound: 10269, higher_bound: 20000, color: "#820099" }
+  ],  
+}
 
 const items = [
   {
@@ -232,7 +223,25 @@ function drawPricePolygons(dataSources) {
   Promise.all(dataSources.map((url) => fetch(url)))
     .then((promiseData) => Promise.all(promiseData.map((data) => data.json())))
     .then((json) => {
-      json.flat().forEach((area) => {
+      priceData = json.flat().map((area) => {
+        if (area.LABEL == "&lt; 1925") {
+          area.price = 1924
+        } else {
+          area.price = area.SELECTIE || Number(area.LABEL.match(/^\d+|\d+\b|\d+(?=\w)/g)[0])
+        }
+
+        return area;
+      });
+
+ 
+      const year = selectedYear || DEFAULT_YEAR
+      console.log(priceData)
+      generateCSSGradient(yearData[year].map(({color}) => color))
+      document.getElementById("priceMax").innerText = htmlDecode(priceData.reduce((max, area) => max.price > area.price ? max : area).LABEL);
+      document.getElementById("priceMin").innerText = htmlDecode(priceData.reduce((max, area) => max.price < area.price ? max : area).LABEL);
+
+
+      priceData.forEach((area) => {
         // Geo string is differently formatted per data
         const coordinates = (area.COORDS || area.WKT).replace(dataRegex, "|").split("|")
           .filter((el) => el.length > 3)
@@ -250,13 +259,11 @@ function drawPricePolygons(dataSources) {
             return { lng, lat };
           });
 
-        const price = area.SELECTIE || Number(area.LABEL.replace(/\D/g, "").substring(0, 4));
-
-        const color = colors.find(
-          (color) =>
-            price >= color.lower_bound &&
-            price <= color.higher_bound
-        ).color || "";
+        const color = yearData[year].find(
+          ({lower_bound, higher_bound}) =>
+            area.price >= lower_bound &&
+            area.price <= higher_bound
+        ).color;
 
         const pricePolygonOptions = {
           paths: coordinates,
@@ -269,22 +276,41 @@ function drawPricePolygons(dataSources) {
         };
 
         const pricePolygon = new google.maps.Polygon(pricePolygonOptions);
-        addPolygonToMap(pricePolygon, "pricePolygon", { price }); 
+        addPolygonToMap(pricePolygon, "pricePolygon", { price: area.price, label: area.LABEL }); 
         google.maps.event.addListener(pricePolygon, "mouseover", showData);
       });
+
+
     });
 }
 
- document.getElementById("updateYear").onchange = function(){
-    var value = document.getElementById("updateYear").value;
+function generateCSSGradient(colors) {
+  const toValue = (color, index) => `${color} ${100/(colors.length) * (index + 1)}%,`
 
-    const oldPolygons = [...polygons]
+  const value = `
+  linear-gradient(
+    to bottom, 
+    ${colors.map(toValue).join(``).slice(0, -1)}
+  )`
 
-    const dataSources = getPriceDataSources(value);
+  document.getElementById("priceGradient").style.backgroundImage = value;
+}
 
-    for (polygon of oldPolygons) {
-      polygon.setMap(null)
-    }
+function htmlDecode(input){
+  var e = document.createElement('div');
+  e.innerHTML = input;
+  return e.childNodes[0].nodeValue;
+}
 
-    drawPricePolygons(dataSources);
- };
+document.getElementById("updateYear").onchange = function(){
+  var value = document.getElementById("updateYear").value;
+  selectedYear = value;
+  const oldPolygons = [...polygons]
+
+  const dataSources = getPriceDataSources(value);
+  for (polygon of oldPolygons) {
+    polygon.setMap(null)
+  }
+
+  drawPricePolygons(dataSources);
+};
