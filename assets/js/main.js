@@ -1,4 +1,8 @@
 let map;
+let selectedYear;
+
+const DEFAULT_YEAR = 2021;
+const data_folder = './data';
 
 const AMSTERDAM_BOUNDS = {
   north: 52.5,
@@ -6,11 +10,6 @@ const AMSTERDAM_BOUNDS = {
   west: 4.7,
   east: 5.1,
 };
-
-const DEFAULT_YEAR = 2021;
-const data_folder = './data';
-
-let selectedYear;
 
 const yearData = {
   2018: [
