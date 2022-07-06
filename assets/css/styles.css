@@ -189,11 +189,11 @@ img.item {
   }
 
   #container {
-    padding-top: 100%;
+    margin-top: 50vh;
   }
   
   .mapContainer {
-    height: 50%;
+    height: 50vh;
     width: 100%;
   }
   
